@@ -6,7 +6,7 @@
 /*   By: mfilahi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 14:06:50 by mfilahi           #+#    #+#             */
-/*   Updated: 2018/11/04 21:33:48 by bel-bouz         ###   ########.fr       */
+/*   Updated: 2018/11/05 20:34:48 by bel-bouz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,65 +112,70 @@ void vide_lettre(char **tab, char lettre,int max)
 }
 
 /////////////recresuvite 
-int		rec(struct tetrim tet, char **tab, int max)
+int		rec(struct tetrim *tet,int p,char **tab, int max)
 {
 	int i;
+//	int r;
+//	int a = 0;
+//	int b = 0;
 	int j;
 	struct tetrim temp;
 
-		i = 3;
-		j = 0;
-		temp = tet;
+	i = 3;
+	j = 0;
+	temp = tet[p];
 
-		while (i >= 0)
+	while (i >= 0)
+	{
+		if (max == 5)
 		{
-			if (max == 5)
-			{
-				printf("\n %d \n",i);
-				afficher(tab);
-			}
-			//printf("hehe = %d",tet.pos[i].y);
-			if (ft_isalpha(tab[tet.pos[i].x][tet.pos[i].y]) == 0)
-			{
-							tab[tet.pos[i].x][tet.pos[i].y] = tet.lettre;
-				afficher(tab);
-				sleep(1);
-			}
-			else
-			{
-				vide_lettre(tab,tet.lettre,max);
-				
-				if (tet.pos[i].y != (max - 1))
-				{
-					tet = decaly(tet, max);
-				}
-				else if (tet.pos[i].x != (max - 1))
-				{
-					tet = decalx(tet, max);
-					while (j < 4)
-					{
-						tet.pos[j].y = temp.pos[j].y;
-						j++;
-					}
-				}
-				if (tet.pos[i].x == (max - 1))
-				{
-					j = 0;
-					while (j < 4)
-					{
-						tet.pos[j].x = temp.pos[j].x;
-						tet.pos[j].y = temp.pos[j].y;
-						j++;
-					}
-
-					return (0);
-				}
-				i = 4;
-				j = 0;
-			}
-				i--;
+			afficher(tab);
 		}
-		return (1);
+		
+		if ( ft_isalpha(tab[tet[p].pos[i].x][tet[p].pos[i].y]) == 0)
+		{
+			tab[tet[p].pos[i].x][tet[p].pos[i].y] = tet[p].lettre;
+			afficher(tab);
+		//	sleep(1);
+		}
+		else
+		{
+			vide_lettre(tab,tet[p].lettre,max);
+			if (tet[p].pos[i].y != (max - 1))
+			{
+				tet[p] = decaly(tet[p], max);
+			}
+			else if (tet[p].pos[i].x != (max - 1))
+			{
+				tet[p]= decalx(tet[p], max);
+				while (j < 4)
+				{
+					tet[p].pos[j].y = temp.pos[j].y;
+					j++;
+				}
+			}
+			if (tet[p].pos[i].x == (max - 1) && tet[p].pos[i].y == (max - 1) )
+			{
+			//r= -1;
+			//while(++r < max)
+		//		printf("tet[%d].pos[%d].x = %d || tet[%d].pos[%d].y = %d \n",p,i,tet[p].pos[i].x,p,i,tet[p].pos[i].y);
+
+				j = 0;
+				while (j < 4)
+				{
+					tet[p].pos[j].x = temp.pos[j].x;
+					tet[p].pos[j].y = temp.pos[j].y;
+					j++;
+				}
+				vide_lettre(tab,tet[p].lettre,max);
+				return (1);
+			}
+			i = 4;
+			j = 0;
+		}
+		i--;
+	}
+	return (0);
 }
 
 
@@ -178,20 +183,35 @@ int			add_titris(struct tetrim *tet,int len,char **tab)
 {
 	int i;
 	int max;
-	i = 0;
+	int r;
+	struct tetrim temp[26];
+	int j;
+	j = 0;
+	i = -1;
 	max = ft_sqrt(len * 4);
-
+	r = 0;
+	while(++i < len)
+		temp[i] = tet[i];
+	i = 0;
 	while(i < len)
 	{
-	//	rec(tet[i], tab, max); 
-		if (rec(tet[i], tab, max) == 0)
+		r = rec(tet,i,tab, max);
+		if (r == 0)
 		{
-			max++;
-			tab = init_tab(max);
-			//printf(" -- >%d ",ft_sqrt(len*4) + 1);
-			i = -1;
+			i++;
 		}
-		i++;
+		if (r == 1)
+		{
+			tet[i] = temp[i];
+			if (i == 0 )
+			{
+				max++;
+				free(tab);
+				tab = init_tab(max);
+				i = 1;
+			}
+			i--;
+		}
 	}
 	afficher(tab);
 	return (0);
@@ -220,29 +240,6 @@ void affiche_tet(struct tetrim *tet ,int len)
 	}
 	i =	 add_titris(tet,len,tab);
 }
-
-
-/*
-int mini_y(char **matrix,int i)
-{
-	int j;
-	int y;
-
-	j = 0;
-	y = 3;
-	while (i < i + 4)
-		{
-			j = 0;
-			while (j < 4)
-			{
-				if (matrix[i][j] == '#' && y > j)
-					y = j;
-				j++;
-			}
-			i++;
-		}
-	return (y);
-}*/
 
 void ft_solve(char **matrix)
 {
@@ -283,13 +280,11 @@ void ft_solve(char **matrix)
 				tet[i_tet].lettre = lettre;
 				tet[i_tet].pos[i_pos].x = i2 - decal_x;
 				tet[i_tet].pos[i_pos].y = y - decal_y;
-			//	printf("x = %d . y = %d \n",decal_x,decal_y);
 				bl = 0;
 				i_pos++;
 			}
 			y++;
 		}
-
 		if (matrix[x][0] == '#' || matrix[x][0] == '.')
 		{
 			if (i2 == 3)
