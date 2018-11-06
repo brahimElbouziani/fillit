@@ -6,7 +6,7 @@
 /*   By: mfilahi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/27 14:36:56 by mfilahi           #+#    #+#             */
-/*   Updated: 2018/11/02 20:46:21 by bel-bouz         ###   ########.fr       */
+/*   Updated: 2018/11/07 00:24:00 by bel-bouz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "fillit.h"
@@ -56,6 +56,7 @@ int		check_block1(char **tmp)
 	var.n_line = 0;
 	var.row = 0;
 	var.relation = 0;
+
 	while (tmp[var.row])
 	{
 		var.j = 0;
@@ -69,18 +70,14 @@ int		check_block1(char **tmp)
 		while (tmp[var.row][var.j] && var.j < 4)
 		{
 			if (tmp[var.row][var.j] == '#')
-			{
 				if (var.j < 3)
 					if (tmp[var.row][var.j] == tmp[var.row][var.j+1])
 						var.relation++;
 				if (var.n_line < 3)
 					if (tmp[var.row][var.j] == tmp[var.row+1][var.j])
 						var.relation++;
-			}
-		//	printf("  tmp[%d][%d] = %c",var.n_line,var.j,tmp[var.row][var.j]);
 			var.j++;
 		}
-		printf("\n");
 		if (*tmp[var.row] == '.' || *tmp[var.row] == '#')
 		{
 			check_block2(&tmp[var.row], &var.dot, &var.hash);
@@ -104,7 +101,6 @@ int		check_block(int fd)
 	while (get_next_line(fd, &line) == 1)
 	{
 		tmp[i] = ft_strdup(line);
-		printf("%s\n",tmp[i]);
 		i++;
 	}
 	tmp[i] = NULL;
