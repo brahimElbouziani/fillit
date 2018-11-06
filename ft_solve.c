@@ -1,12 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
+/*   ft_solve.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bel-bouz <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/06 00:34:03 by bel-bouz          #+#    #+#             */
+/*   Updated: 2018/11/06 20:12:06 by bel-bouz         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
 /*   slove.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mfilahi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/31 14:06:50 by mfilahi           #+#    #+#             */
-/*   Updated: 2018/11/05 20:34:48 by bel-bouz         ###   ########.fr       */
+/*   Updated: 2018/11/06 00:31:46 by bel-bouz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +26,21 @@
 #include <stdio.h>
 
 
-int		ft_sqrt(int nb)
+int    ft_sqrt(int x)
 {
 	int i;
+	int result;
 
-	i = 0;
-	while (i < nb / 2 && i < 46340)
+	i = 1;
+	result = 1;
+	if (x == 0 || x == 1)
+		return (x);
+	while (result <= x)
 	{
-		if ((i * i) == nb)
-		{
-			return (i);
-		}
 		i++;
+		result = i * i;
 	}
-	return (0);
+	return (i - 1);
 }
 void afficher(char **tab)
 {
@@ -68,7 +81,7 @@ char **init_tab(int row)
 struct tetrim 	decalx(struct tetrim tet, int max)
 {
 	int i;
-	i = max - 1;
+	i = 3;
 	while (i >= 0)
 	{
 		if (tet.pos[i].x < max - 1)
@@ -80,7 +93,7 @@ struct tetrim 	decalx(struct tetrim tet, int max)
 struct tetrim decaly(struct tetrim tet,int max)
 {
 	int i;
-	i = max - 1;
+	i = 3;
 	while (i >= 0)
 	{	
 		if (tet.pos[i].y < max - 1)
@@ -115,9 +128,6 @@ void vide_lettre(char **tab, char lettre,int max)
 int		rec(struct tetrim *tet,int p,char **tab, int max)
 {
 	int i;
-//	int r;
-//	int a = 0;
-//	int b = 0;
 	int j;
 	struct tetrim temp;
 
@@ -127,39 +137,39 @@ int		rec(struct tetrim *tet,int p,char **tab, int max)
 
 	while (i >= 0)
 	{
-		if (max == 5)
+		if (tet[p].pos[i].x > max - 1 || tet[p].pos[i].y > max - 1 )
 		{
-			afficher(tab);
+		//	printf("here \n");
+			return (1);
 		}
-		
-		if ( ft_isalpha(tab[tet[p].pos[i].x][tet[p].pos[i].y]) == 0)
+			//	printf("x =%d y = %d max = %d i = %d p = %d\n",tet[p].pos[i].x,tet[p].pos[i].y,max,i,p);
+		if (tab[tet[p].pos[i].x][tet[p].pos[i].y] == '.')
 		{
+		//	if (tab[tet[p].pos[i].x][tet[p].pos[i].y] != '.')
+			//	return (1);
 			tab[tet[p].pos[i].x][tet[p].pos[i].y] = tet[p].lettre;
-			afficher(tab);
-		//	sleep(1);
+		//afficher(tab);
+		//sleep(1);
 		}
 		else
 		{
 			vide_lettre(tab,tet[p].lettre,max);
-			if (tet[p].pos[i].y != (max - 1))
+			if (tet[p].pos[i].y < (max - 1))
 			{
 				tet[p] = decaly(tet[p], max);
 			}
-			else if (tet[p].pos[i].x != (max - 1))
+			else if (tet[p].pos[i].x < (max - 1))
 			{
 				tet[p]= decalx(tet[p], max);
+				j = 0;
 				while (j < 4)
 				{
-					tet[p].pos[j].y = temp.pos[j].y;
+					tet[p].pos[j].y = temp.pos[j].y-1;
 					j++;
 				}
 			}
-			if (tet[p].pos[i].x == (max - 1) && tet[p].pos[i].y == (max - 1) )
+			else if (tet[p].pos[i].x >=(max - 1) && tet[p].pos[i].y >= (max - 1))
 			{
-			//r= -1;
-			//while(++r < max)
-		//		printf("tet[%d].pos[%d].x = %d || tet[%d].pos[%d].y = %d \n",p,i,tet[p].pos[i].x,p,i,tet[p].pos[i].y);
-
 				j = 0;
 				while (j < 4)
 				{
@@ -167,7 +177,6 @@ int		rec(struct tetrim *tet,int p,char **tab, int max)
 					tet[p].pos[j].y = temp.pos[j].y;
 					j++;
 				}
-				vide_lettre(tab,tet[p].lettre,max);
 				return (1);
 			}
 			i = 4;
@@ -178,24 +187,24 @@ int		rec(struct tetrim *tet,int p,char **tab, int max)
 	return (0);
 }
 
-
-int			add_titris(struct tetrim *tet,int len,char **tab)
+int			add_titris(struct tetrim *tet,int len,char **tab,int max)
 {
 	int i;
-	int max;
 	int r;
 	struct tetrim temp[26];
 	int j;
 	j = 0;
 	i = -1;
-	max = ft_sqrt(len * 4);
+
 	r = 0;
+
 	while(++i < len)
 		temp[i] = tet[i];
 	i = 0;
 	while(i < len)
 	{
 		r = rec(tet,i,tab, max);
+
 		if (r == 0)
 		{
 			i++;
@@ -205,12 +214,13 @@ int			add_titris(struct tetrim *tet,int len,char **tab)
 			tet[i] = temp[i];
 			if (i == 0 )
 			{
-				max++;
+							max++;
 				free(tab);
 				tab = init_tab(max);
 				i = 1;
 			}
 			i--;
+		//	tet[i] = temp[i];
 		}
 	}
 	afficher(tab);
@@ -220,9 +230,20 @@ int			add_titris(struct tetrim *tet,int len,char **tab)
 void affiche_tet(struct tetrim *tet ,int len)
 {
 	int j;
+	int max;
 	j = 0;
 	char **tab;
-	tab = init_tab(ft_sqrt(len * 4));
+
+	max = ft_sqrt(len * 4) + j;
+
+	while (j < len)
+	{
+		if (tet[j].pos[3].x + 1 > max)
+			max = tet[0].pos[3].x + 1;
+		j++;
+	}
+	tab = init_tab(max);
+	
 	int i;
 	int decal;
 	decal = 0;
@@ -232,15 +253,43 @@ void affiche_tet(struct tetrim *tet ,int len)
 		j = 0;
 		while (j < 4)
 		{
-			printf ("lettre = %c x = %d y = %d \n",tet[i].lettre,tet[i].pos[j].x,tet[i].pos[j].y);
+		//	printf ("lettre = %c x = %d y = %d  len = %d \n",tet[i].lettre,tet[i].pos[j].x,tet[i].pos[j].y,len);
 			j++;
 		}
 		i++;
 		printf("\n");
 	}
-	i =	 add_titris(tet,len,tab);
+	i =	 add_titris(tet,len,tab, max);
 }
 
+void  adapter(struct tetrim *tet , int len)
+{
+	int i;
+	int j;
+	int k;
+	k = 0;
+	i = 0;
+
+	while (i < len)
+	{
+		j = 0;
+		while (j < 4)
+		{
+			if (tet[i].pos[j].y < 0)
+			{
+				k = 0;
+				while (k < 4)
+				{
+					tet[i].pos[k].y++;
+					k++;
+					j = -1;
+				}
+			}
+			j++;
+		}
+		i++;
+	}
+}
 void ft_solve(char **matrix)
 {
 	int        x;
@@ -280,6 +329,7 @@ void ft_solve(char **matrix)
 				tet[i_tet].lettre = lettre;
 				tet[i_tet].pos[i_pos].x = i2 - decal_x;
 				tet[i_tet].pos[i_pos].y = y - decal_y;
+			//	printf("decaly = %d",decal_y);
 				bl = 0;
 				i_pos++;
 			}
@@ -300,5 +350,6 @@ void ft_solve(char **matrix)
 		}
 		x++;
 	}
+	adapter(tet,i_tet);
 	affiche_tet(tet, i_tet);
 }
