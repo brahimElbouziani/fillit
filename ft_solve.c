@@ -6,7 +6,7 @@
 /*   By: bel-bouz <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/06 00:34:03 by bel-bouz          #+#    #+#             */
-/*   Updated: 2018/11/07 00:17:43 by bel-bouz         ###   ########.fr       */
+/*   Updated: 2018/11/07 01:53:07 by bel-bouz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ void afficher(char **tab)
 		printf("%s\n",tab[i]);
 		i++;
 	}
-	printf("\n");
 }
 char **init_tab(int row)
 {
@@ -125,10 +124,26 @@ void vide_lettre(char **tab, char lettre,int max)
 		row++;
 	}
 }
+int moin_y(struct tetrim tet)
+{
+	int i;
+	int min;
+
+	i = 0;
+	min = tet.pos[0].y;
+	while (i < 4)
+	{
+		if (min < tet.pos[i].y)
+			min = tet.pos[i].y;
+		i++;
+	}
+	return (min);
+}
 int		rec(struct tetrim *tet,int p,char **tab, int max)
 {
 	int i;
 	int j;
+	int z;
 	struct tetrim temp;
 
 	i = 3;
@@ -139,7 +154,12 @@ int		rec(struct tetrim *tet,int p,char **tab, int max)
 		if (tet[p].pos[i].x > max - 1 || tet[p].pos[i].y > max - 1 )
 			return (1);
 		if (tab[tet[p].pos[i].x][tet[p].pos[i].y] == '.')
+		{
 			tab[tet[p].pos[i].x][tet[p].pos[i].y] = tet[p].lettre;
+			
+		//	afficher(tab);
+		//	sleep(1);
+		}
 		else
 		{
 			vide_lettre(tab,tet[p].lettre,max);
@@ -148,9 +168,13 @@ int		rec(struct tetrim *tet,int p,char **tab, int max)
 			else if (tet[p].pos[i].x < (max - 1))
 			{
 				tet[p]= decalx(tet[p], max);
-				j = -1;
-				while (++j < 4)
-					tet[p].pos[j].y = temp.pos[j].y-1;
+				j = 0;
+				z = moin_y(tet[p]);
+				while (j < 4)
+				{
+					tet[p].pos[j].y = temp.pos[j].y - z;
+					j++;
+				}
 			}
 			else if (tet[p].pos[i].x >=(max - 1) && tet[p].pos[i].y >= (max - 1))
 			{
