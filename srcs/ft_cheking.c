@@ -6,11 +6,11 @@
 /*   By: mfilahi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/27 14:36:56 by mfilahi           #+#    #+#             */
-/*   Updated: 2018/11/07 23:05:16 by bel-bouz         ###   ########.fr       */
+/*   Updated: 2018/11/14 21:27:19 by bel-bouz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fillit.h"
+#include "includes/fillit.h"
 
 void		check_block2(char **tmp, int *dot, int *hash)
 {
@@ -53,7 +53,7 @@ void		check_block3(int *dot, int *hash, int *n_line, int *square)
 	}
 }
 
-void		inisial(struct s_var *var)
+void		inisial(t_var *var)
 {
 	var->new_line = 0;
 	var->dot = 0;
@@ -64,7 +64,7 @@ void		inisial(struct s_var *var)
 	var->relation = 0;
 }
 
-void		fonction(char **tmp, struct s_var *var)
+void		ft_function(char **tmp, t_var *var)
 {
 	while (tmp[var->row][var->j] && var->j < 4)
 	{
@@ -88,7 +88,7 @@ void		fonction(char **tmp, struct s_var *var)
 
 int			check_block1(char **tmp)
 {
-	struct s_var var;
+	t_var var;
 
 	inisial(&var);
 	while (tmp[var.row])
@@ -102,7 +102,7 @@ int			check_block1(char **tmp)
 			var.new_line++;
 			var.relation = 0;
 		}
-		fonction(tmp, &var);
+		ft_function(tmp, &var);
 		check_block3(&var.dot, &var.hash, &var.n_line, &var.square);
 		var.row++;
 	}

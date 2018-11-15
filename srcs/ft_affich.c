@@ -6,11 +6,23 @@
 /*   By: mfilahi <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/27 14:40:06 by mfilahi           #+#    #+#             */
-/*   Updated: 2018/11/07 23:09:21 by bel-bouz         ###   ########.fr       */
+/*   Updated: 2018/11/09 17:11:55 by bel-bouz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "fillit.h"
+#include "includes/fillit.h"
+
+void		ft_putchar(char c)
+{
+	write(1, &c, 1);
+}
+
+void		ft_putendl(char const *s)
+{
+	while (*s)
+		ft_putchar(*s++);
+	write(1, "\n", 1);
+}
 
 void		affich_fin(char **tab)
 {
